@@ -1,5 +1,6 @@
 from flask import Flask, request, jsonify
 from werkzeug.exceptions import BadRequest
+import logging
 
 try:
 	from .model_utils import predict_proba, predict_label, load_feature_columns
@@ -7,6 +8,17 @@ except ImportError:
 	from model_utils import predict_proba, predict_label, load_feature_columns
 
 app = Flask(__name__)
+logging.basicConfig(level=logging.INFO)
+
+# Preload model on startup to avoid cold starts
+@app.before_first_request
+def preload_model():
+	"""Preload model on first request to avoid timeout"""
+	try:
+		load_feature_columns()
+		app.logger.info("✓ Model preloaded successfully")
+	except Exception as e:
+		app.logger.error(f"✗ Failed to preload model: {e}")
 
 
 @app.route("/", methods=["GET"])
@@ -43,10 +55,10 @@ def predict():
 		return jsonify({"success": False, "error": str(e)}), 400
 
 
-# if __name__ == "__main__":
-# 	# Run Flask app for local testing
-# 	print(app.url_map)
-# 	app.run(host="0.0.0.0", port=8000, debug=True)
+if __name__ == "__main__":
+	# Run Flask app for local testing
+	print(app.url_map)
+	app.run(host="0.0.0.0", port=8000, debug=True)
 
 if __name__ == "__main__":
     # Gunakan PORT yang disediakan server, atau 8000 kalau di local
