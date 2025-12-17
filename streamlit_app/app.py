@@ -81,15 +81,32 @@ st.markdown('<p class="sub-header">Sistem Pendukung Keputusan Klinis (CDSS)</p>'
 
 @st.cache_data(show_spinner=True)
 def get_feature_columns(api_base: str):
-    try:
-        r = requests.get(f"{api_base}/health", timeout=60)
-        if r.status_code == 200:
-            data = r.json()
-            return data.get("features", [])
-        raise RuntimeError(f"Gagal mengambil fitur dari API: {r.text}")
-    except Exception as e:
-        st.error(f"Koneksi API gagal: {str(e)}")
-        return []
+    """Get feature columns from API with retry logic"""
+    max_retries = 3
+    retry_delay = 2
+    
+    for attempt in range(max_retries):
+        try:
+            r = requests.get(f"{api_base}/health", timeout=30)
+            if r.status_code == 200:
+                data = r.json()
+                return data.get("features", [])
+            raise RuntimeError(f"API Error: {r.status_code} - {r.text}")
+        except requests.exceptions.Timeout:
+            if attempt < max_retries - 1:
+                st.warning(f"⏱️ API Timeout (percobaan {attempt+1}/{max_retries}). Mencoba ulang...")
+                continue
+            else:
+                st.error("❌ API tidak merespons. Render API mungkin sedang mulai. Coba refresh halaman dalam beberapa detik.")
+                return []
+        except requests.exceptions.ConnectionError:
+            st.error(f"❌ Koneksi API gagal. Pastikan API berjalan di {api_base}")
+            return []
+        except Exception as e:
+            st.error(f"❌ Error: {str(e)}")
+            return []
+    
+    return []
 
 # Sidebar
 with st.sidebar:
@@ -149,7 +166,7 @@ with col2:
     if predict_button:
         with st.spinner(" Sedang memproses data pasien..."):
             try:
-                r = requests.post(f"{API_URL}/predict", json=inputs, timeout=60)
+                r = requests.post(f"{API_URL}/predict", json=inputs, timeout=45)
                 
                 if r.status_code == 200:
                     data = r.json()
@@ -178,6 +195,12 @@ with col2:
                         - Jadwalkan kontrol ulang 6 bulan lagi.
                         """)
                     st.markdown("</div>", unsafe_allow_html=True)
+                else:
+                    st.error(f"❌ API Error {r.status_code}: {r.text}")
                     
+            except requests.exceptions.Timeout:
+                st.error("⏱️ Prediksi timeout. Render API mungkin sedang overload. Coba lagi dalam beberapa saat.")
+            except requests.exceptions.ConnectionError:
+                st.error(f"❌ Koneksi ke API gagal. Pastikan API berjalan di {API_URL}")
             except Exception as e:
-                st.error(f"Error sistem: {str(e)}")
+                st.error(f"❌ Error sistem: {str(e)}")
