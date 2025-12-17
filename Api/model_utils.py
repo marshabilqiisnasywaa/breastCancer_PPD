@@ -50,13 +50,13 @@ def make_feature_frame(input_features: dict) -> pd.DataFrame:
 def predict_proba(input_features: dict) -> float:
 	model = load_model()
 	X = make_feature_frame(input_features)
-	# Prefer predict_proba if available; fallback to decision_function; else predict
+	
 	if hasattr(model, "predict_proba"):
 		proba = model.predict_proba(X)
-		# Assume positive class is index 1
+		
 		return float(np.asarray(proba)[0, 1])
 	elif hasattr(model, "decision_function"):
-		# Convert decision function to probability using logistic transform approximation
+		
 		score = float(np.asarray(model.decision_function(X))[0])
 		return float(1.0 / (1.0 + np.exp(-score)))
 	else:

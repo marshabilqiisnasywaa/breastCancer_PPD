@@ -11,7 +11,8 @@ app = Flask(__name__)
 
 @app.route("/", methods=["GET"])
 def index():
-	return jsonify({"message": "Breast Cancer Predictor API", "endpoints": ["/health", "/predict"]})
+	return jsonify({"message": "Breast Cancer Predictor API", 
+				 "endpoints": ["/health", "/predict"]})
 
 @app.route("/health", methods=["GET"])
 def health():
