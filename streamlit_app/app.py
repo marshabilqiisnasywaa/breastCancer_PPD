@@ -112,7 +112,6 @@ with st.sidebar:
         st.stop()
     
     # Input fitur
-    st.markdown('<div class="feature-section">', unsafe_allow_html=True)
     inputs = {}
     for feat in features:
         inputs[feat] = st.number_input(
@@ -122,7 +121,6 @@ with st.sidebar:
             format="%.4f",
             key=feat
         )
-    st.markdown('</div>', unsafe_allow_html=True)
     
     st.markdown("---")
     
