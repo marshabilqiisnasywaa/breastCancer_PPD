@@ -43,8 +43,13 @@ def predict():
 		return jsonify({"success": False, "error": str(e)}), 400
 
 
+# if __name__ == "__main__":
+# 	# Run Flask app for local testing
+# 	print(app.url_map)
+# 	app.run(host="0.0.0.0", port=8000, debug=True)
+
 if __name__ == "__main__":
-	# Run Flask app for local testing
-	print(app.url_map)
-	app.run(host="0.0.0.0", port=8000, debug=True)
+    # Gunakan PORT yang disediakan server, atau 8000 kalau di local
+    port = int(os.environ.get("PORT", 8000))
+    app.run(host="0.0.0.0", port=port)
 
