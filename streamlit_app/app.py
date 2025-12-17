@@ -82,7 +82,7 @@ st.markdown('<p class="sub-header">Sistem Pendukung Keputusan Klinis (CDSS)</p>'
 @st.cache_data(show_spinner=True)
 def get_feature_columns(api_base: str):
     try:
-        r = requests.get(f"{api_base}/health", timeout=5)
+        r = requests.get(f"{api_base}/health", timeout=60)
         if r.status_code == 200:
             data = r.json()
             return data.get("features", [])
@@ -149,7 +149,7 @@ with col2:
     if predict_button:
         with st.spinner(" Sedang memproses data pasien..."):
             try:
-                r = requests.post(f"{API_URL}/predict", json=inputs, timeout=10)
+                r = requests.post(f"{API_URL}/predict", json=inputs, timeout=60)
                 
                 if r.status_code == 200:
                     data = r.json()
