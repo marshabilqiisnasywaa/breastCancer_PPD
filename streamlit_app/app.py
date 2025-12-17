@@ -33,7 +33,7 @@ def check_login():
             # Tampilan Login Dokter
             st.markdown("""
             <div style='text-align: center; padding: 20px; background-color: #f0f9ff; border-radius: 10px; border: 1px solid #bae6fd;'>
-                <h1 style='color: #0369a1;'>👨‍⚕️ Portal Dokter</h1>
+                <h1 style='color: #0369a1;'> Portal Dokter</h1>
                 <p style='color: #475569;'>Silakan login untuk mengakses alat prediksi klinis.</p>
             </div>
             <br>
@@ -51,7 +51,7 @@ def check_login():
                     st.success("Login berhasil! Mengalihkan...")
                     st.rerun() # Refresh halaman untuk masuk
                 else:
-                    st.error("🚫 Akses Ditolak: ID atau Kata Sandi salah.")
+                    st.error(" Akses Ditolak: ID atau Kata Sandi salah.")
         return False # Artinya belum boleh masuk
     
     return True # Artinya sudah login
@@ -76,7 +76,7 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # Header utama
-st.markdown('<h1 class="main-header">🩺 Breast Cancer Predictor</h1>', unsafe_allow_html=True)
+st.markdown('<h1 class="main-header"> Breast Cancer Predictor</h1>', unsafe_allow_html=True)
 st.markdown('<p class="sub-header">Sistem Pendukung Keputusan Klinis (CDSS)</p>', unsafe_allow_html=True)
 
 @st.cache_data(show_spinner=True)
@@ -95,12 +95,12 @@ def get_feature_columns(api_base: str):
 with st.sidebar:
     # Tombol Logout Dokter
     st.write(f"Login sebagai: **{USERNAME_DOKTER}**")
-    if st.button("🚪 Logout Dokter", use_container_width=True):
+    if st.button(" Logout Dokter", use_container_width=True):
         st.session_state.is_logged_in = False
         st.rerun()
         
     st.markdown("---")
-    st.markdown("## 📊 Input Parameter Klinis")
+    st.markdown("##  Input Parameter Klinis")
     st.markdown("Masukkan data pasien:")
     
     # Mendapatkan daftar fitur
@@ -108,7 +108,7 @@ with st.sidebar:
         features = get_feature_columns(API_URL)
     
     if not features:
-        st.warning("⚠️ Tidak dapat memuat daftar parameter. Pastikan API berjalan.")
+        st.warning(" Tidak dapat memuat daftar parameter. Pastikan API berjalan.")
         st.stop()
     
     # Input fitur
@@ -128,7 +128,7 @@ with st.sidebar:
     
     # Tombol prediksi
     predict_button = st.button(
-        "🚀 **Analisis Pasien**",
+        " **Analisis Pasien**",
         type="primary",
         use_container_width=True
     )
@@ -137,7 +137,7 @@ with st.sidebar:
 col1, col2 = st.columns([1, 1])
 
 with col1:
-    st.markdown("## 📝 Catatan Medis")
+    st.markdown("## Catatan Medis")
     st.info("""
     **Panduan Penggunaan:**
     1. Pastikan data input sesuai dengan hasil lab pasien.
@@ -146,10 +146,10 @@ with col1:
     """)
 
 with col2:
-    st.markdown("## 🔍 Hasil Analisis")
+    st.markdown("## Hasil Analisis")
     
     if predict_button:
-        with st.spinner("🔬 Sedang memproses data pasien..."):
+        with st.spinner(" Sedang memproses data pasien..."):
             try:
                 r = requests.post(f"{API_URL}/predict", json=inputs, timeout=10)
                 
@@ -167,14 +167,14 @@ with col2:
                     
                     if label == 1:
                         st.markdown("""
-                        ### ⚠️ HASIL: TERINDIKASI GANAS (Malignant)
+                        ###  HASIL: TERINDIKASI GANAS (Malignant)
                         **Saran Tindakan:**
                         - Jadwalkan pemeriksaan Biopsi.
                         - Lakukan USG lanjutan.
                         """)
                     else:
                         st.markdown("""
-                        ### ✅ HASIL: JINAK (Benign)
+                        ###  HASIL: JINAK (Benign)
                         **Saran Tindakan:**
                         - Observasi rutin.
                         - Jadwalkan kontrol ulang 6 bulan lagi.
