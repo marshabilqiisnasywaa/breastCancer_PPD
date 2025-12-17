@@ -15,7 +15,7 @@ st.set_page_config(
 USERNAME_DOKTER = "dokter"
 PASSWORD_DOKTER = "medis123"
 
-API_URL = os.environ.get("https://breastcancer-ppd.onrender.com")
+API_URL = "https://breastcancer-ppd.onrender.com"
 
 # --- FUNGSI LOGIN KHUSUS DOKTER ---
 def check_login():
